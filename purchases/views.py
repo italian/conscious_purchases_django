@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .forms import PurchaseForm
 from .models import Purchase
-from datetime import datetime
+from datetime import timedelta
+from django.utils import timezone
 from django.http import JsonResponse  # , HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -55,7 +56,7 @@ def checklist(request):
         if form.is_valid():
             purchase = form.save(commit=False)
             purchase.user = request.user
-            purchase.last_purchase_date = datetime.now()
+            purchase.last_purchase_date = timezone.now()
 
             # Поиск последней покупки этого товара
             # last_purchase = Purchase.objects.filter(
@@ -94,20 +95,25 @@ def submit_checklist_result(request):
             user=user,
             item=item,
             # date_added=datetime.now(),
-            last_purchase_date=datetime.now(),
+            last_purchase_date=timezone.now(),
             result=result,
         )
 
         # Поиск последней покупки этого товара
-        # last_purchase = Purchase.objects.filter(
-        #     user=request.user,
-        #     item=purchase.item).order_by('-last_purchase_date').first()
-        # if last_purchase:
-        #     purchase.time_since_last_purchase = \
-        #         purchase.last_purchase_date \
-        #         - last_purchase.last_purchase_date  # type: ignore
-        # else:
-        #     purchase.time_since_last_purchase = None
+        last_purchase = Purchase.objects.filter(
+            user=request.user,
+            item=purchase.item).order_by('-last_purchase_date').first()
+
+        if last_purchase and last_purchase.last_purchase_date:
+            # Вычисляем разницу во времени и округляем до секунды
+            time_diff = \
+                purchase.last_purchase_date - last_purchase.last_purchase_date  # type: ignore # noqa: E501
+            # Округляем до ближайшей секунды
+            rounded_time_diff = timedelta(
+                seconds=int(time_diff.total_seconds()))
+            purchase.time_since_last_purchase = rounded_time_diff
+        else:
+            purchase.time_since_last_purchase = None
 
         purchase.save()
 
