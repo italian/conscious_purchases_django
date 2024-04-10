@@ -1,10 +1,11 @@
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .forms import ChecklistForm, PurchaseForm
+from .forms import PurchaseForm
 from .models import Purchase
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.http import JsonResponse  # , HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -47,6 +48,7 @@ def home(request):
     return render(request, 'purchases/home.html', context)
 
 
+@login_required(login_url='/login/')
 def checklist(request):
     if request.method == 'POST':
         form = PurchaseForm(request.POST)
@@ -54,7 +56,18 @@ def checklist(request):
             purchase = form.save(commit=False)
             purchase.user = request.user
             purchase.last_purchase_date = datetime.now()
-            purchase.time_since_last_purchase = datetime.now() - purchase.last_purchase_date
+
+            # Поиск последней покупки этого товара
+            # last_purchase = Purchase.objects.filter(
+            #     user=request.user,
+            #     item=purchase.item).order_by('-last_purchase_date').first()
+            # if last_purchase:
+            #     purchase.time_since_last_purchase = \
+            #         purchase.last_purchase_date \
+            #         - last_purchase.last_purchase_date
+            # else:
+            #     purchase.time_since_last_purchase = 0
+
             purchase.save()
 
             return render(
@@ -71,24 +84,35 @@ def checklist(request):
 @csrf_exempt
 def submit_checklist_result(request):
     if request.method == 'POST':
-        item = request.POST.get('item')
-        result = request.POST.get('result')
+        data = json.loads(request.body)
+        item = data.get('item')
+        result = data.get('result')
         user = request.user
+
+        # Создаем новую запись в модели Purchase
         purchase = Purchase(
             user=user,
             item=item,
+            # date_added=datetime.now(),
             last_purchase_date=datetime.now(),
-            time_since_last_purchase=None,
-            result = result,
-            )
-        purchase.save()
+            result=result,
+        )
 
-        # Обновление времени с последней покупки
-        time_since_last_purchase = datetime.now() - purchase.last_purchase_date  # type: ignore
-        purchase.time_since_last_purchase = timedelta(days=time_since_last_purchase.days)  # type: ignore
+        # Поиск последней покупки этого товара
+        # last_purchase = Purchase.objects.filter(
+        #     user=request.user,
+        #     item=purchase.item).order_by('-last_purchase_date').first()
+        # if last_purchase:
+        #     purchase.time_since_last_purchase = \
+        #         purchase.last_purchase_date \
+        #         - last_purchase.last_purchase_date  # type: ignore
+        # else:
+        #     purchase.time_since_last_purchase = None
+
         purchase.save()
 
         return JsonResponse({'success': True})
+
     return JsonResponse({'success': False})
 
 

@@ -12,16 +12,18 @@
         <table>
             <tr>
                 <th>Товар</th>
-                <th>Дата покупки</th>
-                <th>Ответ по чек-листу</th>
+                {% comment %} <th>Дата запроса</th> {% endcomment %}
+                <th>Дата последнего запроса</th>
                 <th>Время с последнего запроса</th>
+                <th>Ответ по чек-листу</th>
             </tr>
             {% for purchase in purchases %}
                 <tr>
                     <td>{{ purchase.item }}</td>
+                    {% comment %} <td>{{ purchase.date_added }}</td> {% endcomment %}
                     <td>{{ purchase.last_purchase_date }}</td>
-                    <td>{{ purchase.checklist_response }}</td>
                     <td>{{ purchase.time_since_last_purchase }}</td>
+                    <td>{{ purchase.result }}</td>
                 </tr>
             {% endfor %}
         </table>
