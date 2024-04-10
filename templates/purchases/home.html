@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <h1>Добро пожаловать, {{ user.username }}!</h1>
+
+        <a href="{% url 'logout' %}">Выйти</a>
+        <a href="{% url 'checklist' %}">Пройти чек-лист</a>
+
+        <h2>Ваши покупки</h2>
+        <table>
+            <tr>
+                <th>Товар</th>
+                <th>Дата покупки</th>
+                <th>Ответ по чек-листу</th>
+                <th>Время с последнего запроса</th>
+            </tr>
+            {% for purchase in purchases %}
+                <tr>
+                    <td>{{ purchase.item }}</td>
+                    <td>{{ purchase.last_purchase_date }}</td>
+                    <td>{{ purchase.checklist_response }}</td>
+                    <td>{{ purchase.time_since_last_purchase }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Чек-лист</h2>
+        <!-- Здесь будет форма для прохождения чек-листа -->
+    {% else %}
+        <p>Пожалуйста, войдите в систему или зарегистрируйтесь.</p>
+        <a href="{% url 'login' %}">Войти</a>
+        <a href="{% url 'register' %}">Зарегистрироваться</a>
+    {% endif %}
+{% endblock %}
