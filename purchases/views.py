@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .forms import PurchaseForm
 from .models import Purchase
 from datetime import timedelta
@@ -34,9 +35,10 @@ def login_view(request):
             return redirect('home')
         else:
             # Обработка неудачной попытки входа
+            messages.error(request, 'Неверное имя пользователя или пароль')
             return render(
                 request,
-                'login.html',
+                'purchases/login.html',
                 {'error': 'Неверное имя пользователя или пароль'}
                 )
     return render(request, 'purchases/login.html')
@@ -45,6 +47,14 @@ def login_view(request):
 @login_required(login_url='/login/')
 def home(request):
     purchases = Purchase.objects.filter(user=request.user)
+    for purchase in purchases:
+        # Вычисляем разницу во времени
+        # между последним запросом и текущим временем
+        time_diff = timezone.now() - purchase.last_purchase_date   # type: ignore # noqa: E501
+        # Округляем до ближайшей секунды
+        rounded_time_diff = timedelta(seconds=int(time_diff.total_seconds()))
+        # Добавляем разницу во времени в объект покупки
+        purchase.time_diff = rounded_time_diff   # type: ignore
     context = {'purchases': purchases}
     return render(request, 'purchases/home.html', context)
 
@@ -90,14 +100,30 @@ def submit_checklist_result(request):
         result = data.get('result')
         user = request.user
 
-        # Создаем новую запись в модели Purchase
-        purchase = Purchase(
+        # Используем get_or_create для поиска или создания покупки
+        purchase, created = Purchase.objects.get_or_create(
             user=user,
             item=item,
-            # date_added=datetime.now(),
-            last_purchase_date=timezone.now(),
-            result=result,
+            defaults={
+                'last_purchase_date': timezone.now(),
+                'result': result,
+            }
         )
+
+        # Если покупка уже существует, обновляем ее поля
+        if not created:
+            purchase.last_purchase_date = timezone.now()
+            purchase.result = result
+            purchase.save()
+
+        # Создаем новую запись в модели Purchase
+        # purchase = Purchase(
+        #     user=user,
+        #     item=item,
+        #     # date_added=datetime.now(),
+        #     last_purchase_date=timezone.now(),
+        #     result=result,
+        # )
 
         # Поиск последней покупки этого товара
         last_purchase = Purchase.objects.filter(

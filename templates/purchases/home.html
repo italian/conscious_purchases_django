@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
 
     {% if user.is_authenticated %}
@@ -15,6 +17,7 @@
                 {% comment %} <th>Дата запроса</th> {% endcomment %}
                 <th>Дата последнего запроса</th>
                 <th>Время с последнего запроса</th>
+                <!-- <th>Разница во времени с последним запросом</th> -->
                 <th>Ответ по чек-листу</th>
             </tr>
             {% for purchase in purchases %}
@@ -22,14 +25,23 @@
                     <td>{{ purchase.item }}</td>
                     {% comment %} <td>{{ purchase.date_added }}</td> {% endcomment %}
                     <td>{{ purchase.last_purchase_date }}</td>
-                    <td>{{ purchase.time_since_last_purchase }}</td>
+                    <!-- <td>{{ purchase.time_since_last_purchase }}</td> -->
+                    <td>{{ purchase.time_diff }}</td>
                     <td>{{ purchase.result }}</td>
                 </tr>
             {% endfor %}
         </table>
 
         <h2>Чек-лист</h2>
-        <!-- Здесь будет форма для прохождения чек-листа -->
+        <form id="checklistForm" method="post">
+            {% csrf_token %}
+            <label for="item">Что вы собираетесь купить?</label>
+            <input type="text" id="item" name="item" required oninvalid="this.setCustomValidity('Пожалуйста, введите название покупки.')" oninput="this.setCustomValidity('')">
+            <div id="questions"></div>
+            <button id="button_checklistForm" type="submit">Проверить</button>
+        </form>
+    
+        <script src="{% static 'js/checklist.js' %}"></script>
     {% else %}
         <p>Пожалуйста, войдите в систему или зарегистрируйтесь.</p>
         <a href="{% url 'login' %}">Войти</a>

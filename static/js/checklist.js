@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (await addQuestion('Вам было нужно это вчера?')) {
                     if (await addQuestion('Можете ли вы это одолжить или арендовать?')) {
                         alert('Так и сделайте!');
-                        result_ = 'Так и сделайте!';
+                        result_ = 'Одолжите или арендуйте';
                     } else {
                         if (await addQuestion('Вы хотите это хранить?')) {
                             alert('Покупайте (ищите качественное)');
