@@ -145,6 +145,29 @@ main a:hover {
     color: #1373b3f6;
 }
 
+.content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 20px;
+}
+
+.checklist-container,
+.purchases-container {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.checklist-container {
+    display: grid;
+    /* flex-direction: column; */
+    justify-content: right;
+    /* justify-items: right; */
+}
+
 .helptext,
 ul > li {
     font-size: 0.8em;
