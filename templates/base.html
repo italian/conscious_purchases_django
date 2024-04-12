@@ -13,7 +13,10 @@
                 <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about/">About Us</a></li>
-                    <li><a href="/contact/">Contacts</a></li>
+                    {% comment %} <li><a href="/contact/">Contacts</a></li> {% endcomment %}
+                    {% if is_home %}
+                        <li><a href="#" onclick="logout()">Выйти</a></li>
+                    {% endif %}
                 </ul>
             </nav>
         </header>

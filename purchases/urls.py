@@ -13,6 +13,7 @@ urlpatterns = [
     # path(r'.*\js$', views.java_script),
     path('home/', views.home, name='home'),
     path('', lambda req: redirect('home')),
+    path('about/', views.about, name='about'),
     path('checklist/', views.checklist, name='checklist'),
     path(
         'submit_checklist_result/',

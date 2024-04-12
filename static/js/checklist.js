@@ -54,16 +54,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             }),
         });
     
-        if (result.ok) {
-            const response = await result.json();
-            if (response.success) {
-                alert('Результат чек-листа успешно сохранен!');
-            } else {
-                alert('Ошибка при сохранении результата.');
-            }
-        } else {
-            alert('Ошибка при отправке результата.');
-        }
+        // if (result.ok) {
+        //     const response = await result.json();
+        //     if (response.success) {
+        //         alert('Результат чек-листа успешно сохранен!');
+        //     } else {
+        //         alert('Ошибка при сохранении результата.');
+        //     }
+        // } else {
+        //     alert('Ошибка при отправке результата.');
+        // }
     });
 });
 

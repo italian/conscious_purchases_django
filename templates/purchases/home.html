@@ -5,10 +5,29 @@
 {% block content %}
 
     {% if user.is_authenticated %}
-        <h1>Добро пожаловать, {{ user.username }}!</h1>
+        <h1>Добро пожаловать, {{ user.username }}</h1>
+        <h1 class="checklist_header">Чек-лист для осознанных покупок</h1>
 
-        <a href="{% url 'logout' %}">Выйти</a>
-        <!-- <a href="{% url 'checklist' %}">Пройти чек-лист</a> -->
+        <script>
+            function logout() {
+                var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '{% url "logout" %}', true);
+                xhr.setRequestHeader('X-CSRFToken', csrfToken);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        window.location.href = '/home/'; // Укажите URL для перенаправления после выхода
+                    }
+                };
+                xhr.send('next=/home/'); // Укажите URL для перенаправления после выхода
+            }
+        </script>
+        
+        {% comment %} <a href="#" onclick="logout()">Выйти</a> {% endcomment %}
+        
+        
+        {% comment %} <a href="{% url 'checklist' %}">Пройти чек-лист</a> {% endcomment %}
 
         <div class="content-container">
 

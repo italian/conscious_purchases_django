@@ -55,7 +55,10 @@ def home(request):
         rounded_time_diff = timedelta(seconds=int(time_diff.total_seconds()))
         # Добавляем разницу во времени в объект покупки
         purchase.time_diff = rounded_time_diff   # type: ignore
-    context = {'purchases': purchases}
+    context = {
+        'purchases': purchases,
+        'is_home': True,
+        }
     return render(request, 'purchases/home.html', context)
 
 
@@ -148,7 +151,5 @@ def submit_checklist_result(request):
     return JsonResponse({'success': False})
 
 
-# def java_script(request):
-#     filename = request.path.strip("/")
-#     data = open(filename, 'rb').read()
-#     return HttpResponse(data, mimetype="application/x-javascript")
+def about(request):
+    return render(request, 'purchases/about.html')
