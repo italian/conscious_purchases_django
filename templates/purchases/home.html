@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <h1>Добро пожаловать, {{ user.username }}</h1>
+        <h1 class="checklist_header">Чек-лист для осознанных покупок</h1>
+
+        <script>
+            function logout() {
+                var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '{% url "logout" %}', true);
+                xhr.setRequestHeader('X-CSRFToken', csrfToken);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        window.location.href = '/home/'; // Укажите URL для перенаправления после выхода
+                    }
+                };
+                xhr.send('next=/home/'); // Укажите URL для перенаправления после выхода
+            }
+        </script>
+        
+        {% comment %} <a href="#" onclick="logout()">Выйти</a> {% endcomment %}
+        
+        
+        {% comment %} <a href="{% url 'checklist' %}">Пройти чек-лист</a> {% endcomment %}
+
+        <div class="content-container">
+
+            <div class="checklist-container">
+                <h2>Чек-лист</h2>
+                <form id="checklistForm" method="post">
+                    {% csrf_token %}
+                    <label for="item">Что вы собираетесь купить?</label>
+                    <input type="text" id="item" name="item" required oninvalid="this.setCustomValidity('Пожалуйста, введите название покупки.')" oninput="this.setCustomValidity('')">
+                    <div id="questions"></div>
+                    <button id="button_checklistForm" type="submit">Проверить</button>
+                </form>
+
+                <div id="messageModal" class="modal">
+                    <div class="modal-content-checklist">
+                        <p id="messageText"></p>
+                    </div>
+                </div>
+            
+                <script src="{% static 'js/checklist.js' %}"></script>
+            </div>
+
+            <div class="purchases-container">
+
+                <h2>Ваши покупки</h2>
+                <table>
+                    <tr>
+                        <th>Товар</th>
+                        {% comment %} <th>Дата запроса</th> {% endcomment %}
+                        <th>Дата последнего запроса</th>
+                        <th>Время с последнего запроса</th>
+                        <!-- <th>Разница во времени с последним запросом</th> -->
+                        <th>Ответ по чек-листу</th>
+                    </tr>
+                    {% for purchase in purchases %}
+                        <tr>
+                            <td>{{ purchase.item }}</td>
+                            {% comment %} <td>{{ purchase.date_added }}</td> {% endcomment %}
+                            <td>{{ purchase.last_purchase_date }}</td>
+                            <!-- <td>{{ purchase.time_since_last_purchase }}</td> -->
+                            <td>{{ purchase.time_diff }}</td>
+                            <td>{{ purchase.result }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            
+        </div>
+
+    {% else %}
+        <p>Пожалуйста, войдите в систему или зарегистрируйтесь.</p>
+        <a href="{% url 'login' %}">Войти</a>
+        <a href="{% url 'register' %}">Зарегистрироваться</a>
+    {% endif %}
+{% endblock %}

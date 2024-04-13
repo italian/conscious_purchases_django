@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Результат чек-листа</h1>
+    <p>Ваш результат: {{ result }}</p>
+    <a href="{% url 'checklist' %}">Пройти чек-лист снова</a>
+{% endblock %}

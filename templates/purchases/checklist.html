@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>Чек-лист для осознанных покупок</h1>
+    <form id="checklistForm" method="post">
+        {% csrf_token %}
+        <label for="item">Что вы собираетесь купить?</label>
+        <input type="text" id="item" name="item" required oninvalid="this.setCustomValidity('Пожалуйста, введите название покупки.')" oninput="this.setCustomValidity('')">
+        <div id="questions"></div>
+        <button id="button_checklistForm" type="submit">Проверить</button>
+    </form>
+
+    <script src="{% static 'js/checklist.js' %}"></script>
+{% endblock %}
