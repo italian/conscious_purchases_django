@@ -12,7 +12,7 @@ function closeModal() {
 
 // При нажатии в любом месте за пределами модального окна, закрываем его
 window.onclick = function(event) {
- if (event.target == modal) {
+    if (event.target == modal) {
         closeModal();
     }
 }

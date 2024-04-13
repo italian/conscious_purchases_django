@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const buttonChecklistForm = document.getElementById('button_checklistForm');
     const itemInput = document.getElementById('item');
+    var modal = document.getElementById("messageModal");
 
     buttonChecklistForm.addEventListener('click', async function(event) {
         event.preventDefault();
@@ -18,27 +19,27 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (await addQuestion('Серьезно?')) {
                 if (await addQuestion('Вам было нужно это вчера?')) {
                     if (await addQuestion('Можете ли вы это одолжить или арендовать?')) {
-                        alert('Так и сделайте!');
+                        openModal('Так и сделайте!\nОдолжите или арендуйте');
                         result_ = 'Одолжите или арендуйте';
                     } else {
                         if (await addQuestion('Вы хотите это хранить?')) {
-                            alert('Покупайте (ищите качественное)');
+                            openModal('Покупайте (ищите качественное)');
                             result_ = 'Покупайте (ищите качественное)';
                         } else {
-                            alert('Не покупайте');
+                            openModal('Не покупайте');
                             result_ = 'Не покупайте';
                         }
                     }
                 } else {
-                    alert('Подождите 30 дней (или пока оно вам не понадобится)');
+                    openModal('Подождите 30 дней (или пока оно вам не понадобится)');
                     result_ = 'Подождите 30 дней (или пока оно вам не понадобится)';
                 }
             } else {
-                alert('Не покупайте');
+                openModal('Не покупайте');
                 result_ = 'Не покупайте'; 
             }
         } else {
-            alert('Не покупайте');
+            openModal('Не покупайте');
             result_ = 'Не покупайте';
         }
 
@@ -65,6 +66,30 @@ document.addEventListener('DOMContentLoaded', async function() {
         //     alert('Ошибка при отправке результата.');
         // }
     });
+
+    // Функция для открытия модального окна с сообщением
+    function openModal(message) {
+        document.getElementById("messageText").innerText = message;
+        modal.style.display = "block";
+    }
+
+    // Функция для закрытия модального окна
+    function closeModal() {
+        modal.style.display = "none";
+        location.reload(); // Вызываем функцию для обновления блока покупок
+    }
+
+    // Обработчик событий для закрытия модального окна при клике вне его содержимого
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    // Добавляем обработчик событий click к модальному окну
+    modal.onclick = function() {
+        closeModal();
+    }
 });
 
 
