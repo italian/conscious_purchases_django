@@ -1,7 +1,8 @@
-[![Version](https://img.shields.io/badge/version-0.1-navy)]()
 [![en](https://img.shields.io/badge/lang-en-blue.svg)](/README.md)
 [![made-with-django](https://img.shields.io/badge/Made%20with-Django-darkgreen.svg)](https://www.djangoproject.com/)
 [![GitHub license](https://badgen.net/github/license/Naereen/Strapdown.js)](https://github.com/italian/conscious_purchases_django/blob/main/LICENSE)
+[![Deployed](https://img.shields.io/badge/Deployed-on%20Railway-navy)](https://conscious-purchases.up.railway.app)
+[![Version](https://img.shields.io/badge/version-0.1-navy)]()
 
 # Чек-лист для осознанных покупок
 
