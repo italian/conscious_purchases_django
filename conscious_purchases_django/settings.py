@@ -29,7 +29,7 @@ if DEBUG:
     mimetypes.add_type("application/javascript", ".js", True)
 
 ALLOWED_HOSTS = [
-    'consciouspurchasesdjango-production.up.railway.app',
+    'conscious-purchases.up.railway.app',
 ]
 
 
