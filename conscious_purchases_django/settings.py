@@ -139,4 +139,4 @@ LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/home'
 
 
-# MESSAGE_STORAGE = 'SessionStorage'
+CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
