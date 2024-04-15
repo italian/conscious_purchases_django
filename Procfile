@@ -1,1 +1,1 @@
-web: gunicorn manage:app
+web: gunicorn conscious_purchases_django.wsgi:application
