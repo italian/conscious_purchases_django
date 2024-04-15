@@ -28,7 +28,9 @@ if DEBUG:
     import mimetypes
     mimetypes.add_type("application/javascript", ".js", True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'consciouspurchasesdjango-production.up.railway.app',
+]
 
 
 # Application definition
