@@ -30,6 +30,7 @@ if DEBUG:
 
 ALLOWED_HOSTS = [
     'conscious-purchases.up.railway.app',
+    'web-production-bb2c3.up.railway.app',
 ]
 
 
